@@ -1,23 +1,23 @@
 #Base Image
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env 
-#Container içerisinde çalışacağımız klasör adı
+#Container iÃ§erisinde Ã§alÄ±ÅŸacaÄŸÄ±mÄ±z klasÃ¶r adÄ±
 WORKDIR /app
 
-#Api.csproj app klasörüne kopyaladık
+#Api.csproj app klasÃ¶rÃ¼ne kopyaladÄ±k
 COPY *.csproj .
 
-#dotnet restore çalıştı
+#dotnet restore Ã§alÄ±ÅŸtÄ±
 RUN dotnet restore
 
-#İçerisinde bulunduğum tüm dosyaları docker container içerisindeki app klasörüne taşındı
+#Ä°Ã§erisinde bulunduÄŸum tÃ¼m dosyalarÄ± docker container iÃ§erisindeki app klasÃ¶rÃ¼ne taÅŸÄ±ndÄ±
 COPY . ./
 
-#Publish işlemi yapıldı
+#Publish iÅŸlemi yapÄ±ldÄ±
 RUN dotnet publish -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
-#Build edilmiş dosyaları app'in altındaki out altındakilerin tamamını çalışma klasörüne alıyoruz
+#Build edilmiÅŸ dosyalarÄ± app'in altÄ±ndaki out altÄ±ndakilerin tamamÄ±nÄ± Ã§alÄ±ÅŸma klasÃ¶rÃ¼ne alÄ±yoruz
 COPY --from=build-env /app/out .
-#dotnet gidip Api.dll çalıştıracak. Öncelikle program.cs içine yazdıklarımız çalışmaya başlayacak
+#dotnet gidip Api.dll Ã§alÄ±ÅŸtÄ±racak. Ã–ncelikle program.cs iÃ§ine yazdÄ±klarÄ±mÄ±z Ã§alÄ±ÅŸmaya baÅŸlayacak
 ENTRYPOINT ["dotnet", "Api.dll"]
